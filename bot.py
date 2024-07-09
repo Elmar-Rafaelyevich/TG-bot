@@ -4,10 +4,11 @@ from token_bot import bot_token
 from main import *
 import os
 
-if not os.path.exists('documents'):
-    os.makedirs('documents')
-    
-
+directories = ['documents', 'ekanom_paket', 'hotel', 'luks_paket', 'namoz', 'standart_paket']
+for directory in directories:
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        
 bot = telebot.TeleBot(bot_token)
 
 @bot.message_handler(commands=['start'])
@@ -33,6 +34,8 @@ def main(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def checkout_message(call):
+    global last_sum
+    
     if call.data == reys:
         bot.send_message(call.message.chat.id, "Reyslar boicha malumot:")
         send_last_image(call.message)
@@ -52,13 +55,14 @@ def checkout_message(call):
         bot.send_message(call.message.chat.id, narxlar_comment, reply_markup=markup)       
         
     elif call.data == ekanom:
-        ekanom_fun(call.message)
+        show_last_sum_ekanom(call.message)
+    
         
     elif call.data == standart:
-        standart_fun(call.message)
+        show_last_sum_standart(call.message)
         
     elif call.data == luks:
-        luks_fun(call.message)
+        show_last_sum_luks(call.message)
         
     elif call.data == videolar:
         video_fun(call.message)
@@ -143,43 +147,112 @@ def video_fun(message):
         
     bot.send_message(message.chat.id, videolar, reply_markup=exit_markup)
     
-    
-def luks_fun(message):
-    exit_markup = types.InlineKeyboardMarkup()
-    exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
-    exit_markup.add(exit_b)
-    
-    bot.send_message(message.chat.id, luks_list, reply_markup=exit_markup)
-    
-    
-def standart_fun(message):
-    exit_markup = types.InlineKeyboardMarkup()
-    exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
-    exit_markup.add(exit_b)
-    
-    bot.send_message(message.chat.id, standart_list, reply_markup=exit_markup)
-    
-        
-        
-def ekanom_fun(message):
-    exit_markup = types.InlineKeyboardMarkup()
-    exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
-    exit_markup.add(exit_b)
-    
-    bot.send_message(message.chat.id, ekanom_list, reply_markup=exit_markup)
-    
 
 @bot.message_handler(content_types=['text'])
 def admin_panel_fun(message):
     
-    if message.text == "/reys":
+    if message.text == "/admin":
+        
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        b1 = types.KeyboardButton("Reyslarni ozgartirish")
+        b2 = types.KeyboardButton("Namoz vaqtini ozgartirish")
+        b3 = types.KeyboardButton("Ekanom")
+        b4 = types.KeyboardButton("Standart")
+        b5 = types.KeyboardButton("Luks")
+    
+        markup.row(b1)
+        markup.row(b2)
+        markup.row(b3, b4)
+        markup.row(b5)
+        
+        bot.send_message(message.chat.id, "Qaysi malumotni ozgartirmoxchisiz ?", reply_markup=markup)
+    
+    elif message.text == "Reyslarni ozgartirish":
         msg = bot.send_message(message.chat.id, "Menga PNG faylni yuklang !")
         bot.register_next_step_handler(msg, file_checkout_fun)
-        
-    elif message.text == "/namoz":
+            
+    elif message.text == "Namoz vaqtini ozgartirish":
         namoz_msg = bot.send_message(message.chat.id, "Menga PNG faylni yuklang !")
         bot.register_next_step_handler(namoz_msg, namoz_msg_checkout_fun)
+            
+    elif message.text == "Ekanom":
+        ekanom_price = bot.send_message(message.chat.id, "Mega Ekanom paketni narxini kiriting !")
+        bot.register_next_step_handler(ekanom_price, ekanom_checkout_fun)
+
+    elif message.text == "Standart":
+        standart_price = bot.send_message(message.chat.id, "Mega Standart paketni narxini kiriting !")
+        bot.register_next_step_handler(standart_price, standart_checkout_fun)
         
+    elif message.text == "Luks":
+        luks_price = bot.send_message(message.chat.id, "Mega Luks paketni narxini kiriting !")
+        bot.register_next_step_handler(luks_price, luks_checkout_fun)
+        
+    else:
+        admin_panel_fun(message)
+     
+def luks_checkout_fun(message):
+    summa = message.text
+    try:
+        with open("luks_paket/luks_txt.txt", 'w') as file:
+            file.write(f"{summa}\n")
+        bot.send_message(message.chat.id, f"Malumot ozgartirildi !")
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Xatolik yuz berdi: {e}")
+
+def show_last_sum_luks(message):
+    try:
+        with open("luks_paket/luks_txt.txt", 'r') as file:
+            last_sum = file.readlines()[-1].strip()
+        exit_markup = types.InlineKeyboardMarkup()
+        exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
+        exit_markup.add(exit_b)
+        bot.send_message(message.chat.id, f"14 kunlik Umra ziyoratMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n5 ⭐️⭐️⭐️⭐️⭐️ mehmonxonalar (Соат мехмонхона)\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nStandart paket narxi {last_sum}$", reply_markup=exit_markup)
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
+
+        
+def standart_checkout_fun(message):
+    summa = message.text
+    try:
+        with open("standart_paket/standart_txt.txt", 'w') as file:
+            file.write(f"{summa}\n")
+        bot.send_message(message.chat.id, f"Malumot ozgartirildi !")
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Xatolik yuz berdi: {e}")
+
+def show_last_sum_standart(message):
+    try:
+        with open("standart_paket/standart_txt.txt", 'r') as file:
+            last_sum = file.readlines()[-1].strip()
+        exit_markup = types.InlineKeyboardMarkup()
+        exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
+        exit_markup.add(exit_b)
+        bot.send_message(message.chat.id, f"14 kunlik Umra ziyoratMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n4 ⭐️⭐️⭐️ ⭐️ mehmonxonalar\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nStandart paket narxi {last_sum}$", reply_markup=exit_markup)
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
+
+
+def ekanom_checkout_fun(message):
+    summa = message.text
+    try:
+        with open("ekanom_paket/ekanom_txt.txt", 'w') as file:
+            file.write(f"{summa}\n")
+        bot.send_message(message.chat.id, f"Malumot ozgartirildi !")
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Xatolik yuz berdi: {e}")
+
+
+def show_last_sum_ekanom(message):
+    try:
+        with open("ekanom_paket/ekanom_txt.txt", 'r') as file:
+            last_sum = file.readlines()[-1].strip()
+        exit_markup = types.InlineKeyboardMarkup()
+        exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
+        exit_markup.add(exit_b)
+        bot.send_message(message.chat.id, f"14 kunlik Umra ziyoratMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n3⭐️⭐️⭐️ mehmonxonalar\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nEkanom paket narxi {last_sum}$", reply_markup=exit_markup)
+    except Exception as e:
+        bot.send_message(message.chat.id, f"Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
+
         
 def namoz_msg_checkout_fun(message):
     if message.document:
