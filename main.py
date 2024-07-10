@@ -7,8 +7,6 @@ test = "Ro'yxatdan otish"
 namoz = "Namoz vaqtlar"
 
 
-
-
 narxlar_comment = "📄 Bizda mavjud bo'lgan PAKETLAR"
 
 admin_info = "🧑‍💻 @sst1989\n📞 Telefon raqam : +998770002010\n+998979713330\n+998980011555\n+998330111777"
@@ -22,10 +20,6 @@ luks = "Luks"
 
 makka = "Makka"
 madina = "Madina"
-
-makka_hotel_comment = ["🏨 Mexmonxona  ⭐️⭐️⭐️⭐️⭐️\n🥗 Ovqatlanish 3️⃣"]
-madina_hotel_comment = ["🏨 Mexmonxona  ⭐️⭐️⭐️⭐️⭐️\n🥗 Ovqatlanish 3️⃣"]
-
 
 reys_button = "Reyslarni ozgartirish"
 namoz_button = "Namoz vaqtini ozgartirish"
