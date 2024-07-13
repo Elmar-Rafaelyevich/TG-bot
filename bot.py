@@ -37,7 +37,7 @@ def checkout_message(call):
     global last_sum
     
     if call.data == reys:
-        bot.send_message(call.message.chat.id, "Reyslar boicha malumot:")
+        bot.send_message(call.message.chat.id, "✈️ Reyslar boicha malumot:")
         send_last_image(call.message)
         
     elif call.data == ortga:
@@ -88,7 +88,7 @@ def checkout_message(call):
         madina_hotel_fun(call.message)
     
     elif call.data == namoz:
-        bot.send_message(call.message.chat.id, "Namoz vaqtlari boicha malumot :")
+        bot.send_message(call.message.chat.id, "⏳ Namoz vaqtlari boicha malumot")
         send_last_namoz_time(call.message)
         
     elif call.data == test:
@@ -102,7 +102,7 @@ def get_name(message):
         phone = bot.send_message(message.chat.id, "📞 Telefon raqam kiriting!\nMisol: +998977777777")
         bot.register_next_step_handler(phone, get_phone)
     else:
-        bot.send_message(message.chat.id, "Ism Familiya noto'g'ri. Iltimos qaytadan kiriting.")
+        bot.send_message(message.chat.id, "✍️ Ism Familiya noto'g'ri. Iltimos qaytadan kiriting.")
         retry_name = bot.send_message(message.chat.id, "✍️ Ism Familiya yozib qoldiring!\nMisol: Abduganiyev, Islombek")
         bot.register_next_step_handler(retry_name, get_name)
 
@@ -110,10 +110,10 @@ def get_phone(message):
     global phone
     phone = message.text
     if phone.startswith('+') and len(phone) == 13:
-        bot.send_message(message.chat.id, "Ma'lumotlaringiz qabul qilindi.")
-        bot.send_message(-1002187998767, f"{name} - {phone}")
+        bot.send_message(message.chat.id, "📩 Ma'lumotlaringiz qabul qilindi.")
+        bot.send_message(-1002187998767, f"Ism : {name} Telefon raqam : {phone}")
     else:
-        bot.send_message(message.chat.id, "Telefon raqam noto'g'ri. Iltimos qaytadan kiriting.")
+        bot.send_message(message.chat.id, "📞 Telefon raqam noto'g'ri. Iltimos qaytadan kiriting.")
         retry_phone = bot.send_message(message.chat.id, "📞 Telefon raqam kiriting!\nMisol: +998977777777")
         bot.register_next_step_handler(retry_phone, get_phone)
 
@@ -154,37 +154,37 @@ def admin_panel_fun(message):
     if message.text == "/admin":
         
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        b1 = types.KeyboardButton("Reyslarni ozgartirish")
-        b2 = types.KeyboardButton("Namoz vaqtini ozgartirish")
-        b3 = types.KeyboardButton("Ekanom")
-        b4 = types.KeyboardButton("Standart")
-        b5 = types.KeyboardButton("Luks")
+        b1 = types.KeyboardButton("✈️ Reyslarni ozgartirish")
+        b2 = types.KeyboardButton("🕰 Namoz vaqtini ozgartirish")
+        b3 = types.KeyboardButton("🛫 Ekanom")
+        b4 = types.KeyboardButton("🛫 Standart")
+        b5 = types.KeyboardButton("🛫 Luks")
     
         markup.row(b1)
         markup.row(b2)
         markup.row(b3, b4)
         markup.row(b5)
         
-        bot.send_message(message.chat.id, "Qaysi malumotni ozgartirmoxchisiz ?", reply_markup=markup)
+        bot.send_message(message.chat.id, "✏️ Admin panelga xush kelibsiz", reply_markup=markup)
     
-    elif message.text == "Reyslarni ozgartirish":
-        msg = bot.send_message(message.chat.id, "Menga PNG faylni yuklang !")
+    elif message.text == "✈️ Reyslarni ozgartirish":
+        msg = bot.send_message(message.chat.id, "📁 Menga PNG yoki JPEG faylni yuklang !")
         bot.register_next_step_handler(msg, file_checkout_fun)
             
-    elif message.text == "Namoz vaqtini ozgartirish":
-        namoz_msg = bot.send_message(message.chat.id, "Menga PNG faylni yuklang !")
+    elif message.text == "🕰 Namoz vaqtini ozgartirish":
+        namoz_msg = bot.send_message(message.chat.id, "📁 Menga PNG yoki JPEG faylni yuklang !")
         bot.register_next_step_handler(namoz_msg, namoz_msg_checkout_fun)
             
-    elif message.text == "Ekanom":
-        ekanom_price = bot.send_message(message.chat.id, "Mega Ekanom paketni narxini kiriting !")
+    elif message.text == "🛫 Ekanom":
+        ekanom_price = bot.send_message(message.chat.id, "🛫 Ekanom paketni narxini kiriting !")
         bot.register_next_step_handler(ekanom_price, ekanom_checkout_fun)
 
-    elif message.text == "Standart":
-        standart_price = bot.send_message(message.chat.id, "Mega Standart paketni narxini kiriting !")
+    elif message.text == "🛫 Standart":
+        standart_price = bot.send_message(message.chat.id, "🛫 Standart paketni narxini kiriting !")
         bot.register_next_step_handler(standart_price, standart_checkout_fun)
         
-    elif message.text == "Luks":
-        luks_price = bot.send_message(message.chat.id, "Mega Luks paketni narxini kiriting !")
+    elif message.text == "🛫 Luks":
+        luks_price = bot.send_message(message.chat.id, "🛫 Luks paketni narxini kiriting !")
         bot.register_next_step_handler(luks_price, luks_checkout_fun)
         
     else:
@@ -195,9 +195,9 @@ def luks_checkout_fun(message):
     try:
         with open("luks_paket/luks_txt.txt", 'w') as file:
             file.write(f"{summa}\n")
-        bot.send_message(message.chat.id, f"Malumot ozgartirildi !")
+        bot.send_message(message.chat.id, f"Malumot saqlandi !")
     except Exception as e:
-        bot.send_message(message.chat.id, f"Xatolik yuz berdi: {e}")
+        bot.send_message(message.chat.id, f"⚙️ Xatolik yuz berdi: {e}")
 
 def show_last_sum_luks(message):
     try:
@@ -208,7 +208,7 @@ def show_last_sum_luks(message):
         exit_markup.add(exit_b)
         bot.send_message(message.chat.id, f"14 kunlik Umra ziyoratMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n5 ⭐️⭐️⭐️⭐️⭐️ mehmonxonalar (Соат мехмонхона)\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nStandart paket narxi {last_sum}$", reply_markup=exit_markup)
     except Exception as e:
-        bot.send_message(message.chat.id, f"Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
+        bot.send_message(message.chat.id, f"⚙️ Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
 
         
 def standart_checkout_fun(message):
@@ -216,9 +216,9 @@ def standart_checkout_fun(message):
     try:
         with open("standart_paket/standart_txt.txt", 'w') as file:
             file.write(f"{summa}\n")
-        bot.send_message(message.chat.id, f"Malumot ozgartirildi !")
+        bot.send_message(message.chat.id, f"Malumot saqlandi !")
     except Exception as e:
-        bot.send_message(message.chat.id, f"Xatolik yuz berdi: {e}")
+        bot.send_message(message.chat.id, f"⚙️ Xatolik yuz berdi: {e}")
 
 def show_last_sum_standart(message):
     try:
@@ -229,7 +229,7 @@ def show_last_sum_standart(message):
         exit_markup.add(exit_b)
         bot.send_message(message.chat.id, f"14 kunlik Umra ziyoratMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n4 ⭐️⭐️⭐️ ⭐️ mehmonxonalar\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nStandart paket narxi {last_sum}$", reply_markup=exit_markup)
     except Exception as e:
-        bot.send_message(message.chat.id, f"Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
+        bot.send_message(message.chat.id, f"⚙️ Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
 
 
 def ekanom_checkout_fun(message):
@@ -237,9 +237,9 @@ def ekanom_checkout_fun(message):
     try:
         with open("ekanom_paket/ekanom_txt.txt", 'w') as file:
             file.write(f"{summa}\n")
-        bot.send_message(message.chat.id, f"Malumot ozgartirildi !")
+        bot.send_message(message.chat.id, f"Malumot saqlandi !")
     except Exception as e:
-        bot.send_message(message.chat.id, f"Xatolik yuz berdi: {e}")
+        bot.send_message(message.chat.id, f"⚙️ Xatolik yuz berdi: {e}")
 
 
 def show_last_sum_ekanom(message):
@@ -251,7 +251,7 @@ def show_last_sum_ekanom(message):
         exit_markup.add(exit_b)
         bot.send_message(message.chat.id, f"14 kunlik Umra ziyoratMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n3⭐️⭐️⭐️ mehmonxonalar\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nEkanom paket narxi {last_sum}$", reply_markup=exit_markup)
     except Exception as e:
-        bot.send_message(message.chat.id, f"Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
+        bot.send_message(message.chat.id, f"⚙️ Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
 
         
 def namoz_msg_checkout_fun(message):
@@ -317,4 +317,6 @@ def send_last_image(message):
     else:
         bot.send_message(message.chat.id, "Fayl mavjud emas !")
 
-bot.polling(non_stop=True)
+if __name__ == "__main__":
+    bot.polling(non_stop=True)
+
