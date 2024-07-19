@@ -10,6 +10,7 @@ for directory in directories:
         os.makedirs(directory)
         
 bot = telebot.TeleBot(bot_token)
+print("start")
 
 @bot.message_handler(commands=['start'])
 def main(message):
@@ -19,17 +20,20 @@ def main(message):
     b2 = types.InlineKeyboardButton("📌 Narxlar", callback_data=narxlar) 
     b3 = types.InlineKeyboardButton("📷 Videolar", callback_data=videolar) 
     b4 = types.InlineKeyboardButton("📲 Bo'glanish", callback_data=boglanish) 
-    b5 = types.InlineKeyboardButton("🛎 Mexmonxonalar", callback_data=mexmonxonalar)
-    b6 = types.InlineKeyboardButton("⏳ Namoz vaqtlari", callback_data=namoz)
-    b7 = types.InlineKeyboardButton("✏️ Ro'yxatdan otish", callback_data=test)
+    b5 = types.InlineKeyboardButton("📍 Manzil", callback_data=location)
+    b6 = types.InlineKeyboardButton("📃 Litsenziya", callback_data=litsen)
+    b7 = types.InlineKeyboardButton("🛎 Mexmonxonalar", callback_data=mexmonxonalar)
+    b8 = types.InlineKeyboardButton("⏳ Namoz vaqtlari", callback_data=namoz)
+    b9 = types.InlineKeyboardButton("✏️ Ro'yxatdan otish", callback_data=test)
 
     markup.row(b1, b2)
     markup.row(b3,b4)
-    markup.row(b5)
-    markup.row(b6)
+    markup.row(b5, b6)
     markup.row(b7)
+    markup.row(b8)
+    markup.row(b9)
     
-    bot.send_message(message.chat.id, f"Assalomu alekum {message.from_user.first_name}\nSalaam travelga hush kelibsiz !", reply_markup=markup)
+    bot.send_message(message.chat.id, f"Assalomu aleykum {message.from_user.first_name}\nSalaam travelga hush kelibsiz !", reply_markup=markup)
     
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -37,8 +41,14 @@ def checkout_message(call):
     global last_sum
     
     if call.data == reys:
-        bot.send_message(call.message.chat.id, "✈️ Reyslar boicha malumot:")
+        bot.send_message(call.message.chat.id, "✈️ Reyslar bo'yicha ma'lumot:")
         send_last_image(call.message)
+        
+    elif call.data == litsen:
+        license_fun(call.message)
+    
+    elif call.data == location:
+        location_fun(call.message)
         
     elif call.data == ortga:
         main(call.message)
@@ -47,8 +57,8 @@ def checkout_message(call):
         markup = types.InlineKeyboardMarkup()
         b1 = types.InlineKeyboardButton("🛫 Ekanom", callback_data=ekanom)
         b2 = types.InlineKeyboardButton("🛫 Standart", callback_data=standart)
-        b3 = types.InlineKeyboardButton("🛫 Luks", callback_data=luks)
-        exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
+        b3 = types.InlineKeyboardButton("🛫 Lyuks", callback_data=luks)
+        exit_b = types.InlineKeyboardButton("◀️ Ortga", callback_data=ortga)
         
         markup.row(b1,b2,b3)
         markup.row(exit_b)
@@ -74,7 +84,7 @@ def checkout_message(call):
         markup = types.InlineKeyboardMarkup()
         b1 = types.InlineKeyboardButton("🕋 Makka", callback_data=makka)
         b2 = types.InlineKeyboardButton("🕋 Madina", callback_data=madina)
-        exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
+        exit_b = types.InlineKeyboardButton("◀️ Ortga", callback_data=ortga)
         
         markup.row(b1, b2)
         markup.row(exit_b)
@@ -88,11 +98,11 @@ def checkout_message(call):
         madina_hotel_fun(call.message)
     
     elif call.data == namoz:
-        bot.send_message(call.message.chat.id, "⏳ Namoz vaqtlari boicha malumot")
+        bot.send_message(call.message.chat.id, "⏳ Namoz vaqtlari bo'yicha ma'lumot")
         send_last_namoz_time(call.message)
         
     elif call.data == test:
-        name = bot.send_message(call.message.chat.id, "✍️ Ism Familiya yozib qoldiring!\nMisol: Abduganiyev, Islombek")
+        name = bot.send_message(call.message.chat.id, "✍️ Ismingizni yozing\nMisol: Islombek")
         bot.register_next_step_handler(name, get_name)
 
 def get_name(message):
@@ -110,7 +120,7 @@ def get_phone(message):
     global phone
     phone = message.text
     if phone.startswith('+') and len(phone) == 13:
-        bot.send_message(message.chat.id, "📩 Ma'lumotlaringiz qabul qilindi.")
+        bot.send_message(message.chat.id, "📩 Ma'lumotlaringiz qabul qilindi !\nTez orada siz bilan bog'lanamiz")
         bot.send_message(-1002187998767, f"Ism : {name} Telefon raqam : {phone}")
     else:
         bot.send_message(message.chat.id, "📞 Telefon raqam noto'g'ri. Iltimos qaytadan kiriting.")
@@ -120,29 +130,29 @@ def get_phone(message):
         
 def madina_hotel_fun(message):
     exit_markup = types.InlineKeyboardMarkup()
-    exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
+    exit_b = types.InlineKeyboardButton("◀️ Ortga", callback_data=ortga)
     with open("hotel/madina_video.mp4", 'rb') as photo:
         exit_markup.row(exit_b)
         bot.send_video(message.chat.id, photo, reply_markup=exit_markup)
         
 def makka_hotel_fun(message):
     exit_markup = types.InlineKeyboardMarkup()
-    exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
-    with open("hotel/madina_video.mp4", 'rb') as img:
+    exit_b = types.InlineKeyboardButton("◀️ Ortga", callback_data=ortga)
+    with open("hotel/makka_video.mp4", 'rb') as img:
         exit_markup.row(exit_b)
         bot.send_video(message.chat.id, img, reply_markup=exit_markup)
         
         
 def call_fun(message):
     exit_markup = types.InlineKeyboardMarkup()
-    exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
+    exit_b = types.InlineKeyboardButton("◀️ Ortga", callback_data=ortga)
     exit_markup.add(exit_b)
         
     bot.send_message(message.chat.id, admin_info, reply_markup=exit_markup)
     
 def video_fun(message):
     exit_markup = types.InlineKeyboardMarkup()
-    exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
+    exit_b = types.InlineKeyboardButton("◀️ Ortga", callback_data=ortga)
     exit_markup.add(exit_b)
         
     bot.send_message(message.chat.id, videolar, reply_markup=exit_markup)
@@ -204,9 +214,9 @@ def show_last_sum_luks(message):
         with open("luks_paket/luks_txt.txt", 'r') as file:
             last_sum = file.readlines()[-1].strip()
         exit_markup = types.InlineKeyboardMarkup()
-        exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
+        exit_b = types.InlineKeyboardButton("◀️ Ortga", callback_data=ortga)
         exit_markup.add(exit_b)
-        bot.send_message(message.chat.id, f"14 kunlik Umra ziyoratMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n5 ⭐️⭐️⭐️⭐️⭐️ mehmonxonalar (Соат мехмонхона)\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nStandart paket narxi {last_sum}$", reply_markup=exit_markup)
+        bot.send_message(message.chat.id, f"14 kunlik Umra ziyorat\nMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n5 ⭐️⭐️⭐️⭐️⭐️ mehmonxonalar (Соат мехмонхона)\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nQizil dengiz\nLuks paket narxi {last_sum}$", reply_markup=exit_markup)
     except Exception as e:
         bot.send_message(message.chat.id, f"⚙️ Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
 
@@ -225,9 +235,9 @@ def show_last_sum_standart(message):
         with open("standart_paket/standart_txt.txt", 'r') as file:
             last_sum = file.readlines()[-1].strip()
         exit_markup = types.InlineKeyboardMarkup()
-        exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
+        exit_b = types.InlineKeyboardButton("◀️ Ortga", callback_data=ortga)
         exit_markup.add(exit_b)
-        bot.send_message(message.chat.id, f"14 kunlik Umra ziyoratMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n4 ⭐️⭐️⭐️ ⭐️ mehmonxonalar\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nStandart paket narxi {last_sum}$", reply_markup=exit_markup)
+        bot.send_message(message.chat.id, f"14 kunlik Umra ziyorat\nMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n4 ⭐️⭐️⭐️ ⭐️ mehmonxonalar\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nQizil dengiz\nStandart paket narxi {last_sum}$", reply_markup=exit_markup)
     except Exception as e:
         bot.send_message(message.chat.id, f"⚙️ Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
 
@@ -247,9 +257,9 @@ def show_last_sum_ekanom(message):
         with open("ekanom_paket/ekanom_txt.txt", 'r') as file:
             last_sum = file.readlines()[-1].strip()
         exit_markup = types.InlineKeyboardMarkup()
-        exit_b = types.InlineKeyboardButton("◀️ O'rtga", callback_data=ortga)
+        exit_b = types.InlineKeyboardButton("◀️ Ortga", callback_data=ortga)
         exit_markup.add(exit_b)
-        bot.send_message(message.chat.id, f"14 kunlik Umra ziyoratMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n3⭐️⭐️⭐️ mehmonxonalar\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nEkanom paket narxi {last_sum}$", reply_markup=exit_markup)
+        bot.send_message(message.chat.id, f"14 kunlik Umra ziyorat\nMalakali Elliboshilar\nRavzai sharifga kirish\nMalakali shifokor nazorati\n3⭐️⭐️⭐️ mehmonxonalar\n2 va 3 mahal tansiq taomlar\nMadina va Makka bo'ylab ziyorat\nKomfort transport\nAviabilet va Umra vizasi\nKompaniya tomonidan sovg'alar\nQizil dengiz\nEkanom paket narxi {last_sum}$", reply_markup=exit_markup)
     except Exception as e:
         bot.send_message(message.chat.id, f"⚙️ Xatolik yuz berdi yoki hech qanday summa kiritilmagan: {e}")
 
@@ -317,6 +327,27 @@ def send_last_image(message):
     else:
         bot.send_message(message.chat.id, "Fayl mavjud emas !")
 
+def license_fun(message):
+    pdf_files = [
+        "license/certificate-38806.pdf",
+        "license/Salaam Guvohnoma.pdf",
+        "license/Salaam Litsenziya.pdf",
+        "license/Salaam sertifikat.pdf"
+    ]
+
+    for pdf_file in pdf_files:
+        with open(pdf_file, 'rb') as file:
+            bot.send_document(message.chat.id, file)
+            
+def location_fun(message):
+    latitude = 40.648157
+    longitude = 72.237985
+    
+    exit_markup = types.InlineKeyboardMarkup()
+    exit_b = types.InlineKeyboardButton("◀️ Ortga", callback_data=ortga)
+    exit_markup.add(exit_b)
+    bot.send_location(message.chat.id, latitude, longitude)
+    
 if __name__ == "__main__":
     bot.polling(non_stop=True)
 

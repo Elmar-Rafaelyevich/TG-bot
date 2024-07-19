@@ -5,11 +5,12 @@ boglanish = "Bo'glanish"
 mexmonxonalar = "Mexmonxonalar"
 test = "Ro'yxatdan otish"
 namoz = "Namoz vaqtlar"
-
+location = "Manzil"
+litsen = "litsenziya"
 
 narxlar_comment = "📄 Bizda mavjud bo'lgan PAKETLAR"
 
-admin_info = "🧑‍💻 @sst1989\n📞 Telefon raqam : +998770002010\n+998979713330\n+998980011555\n+998330111777"
+admin_info = "🧑‍💻 @sst1989\n+998770002010\n+998979713330\n+998980011555\n+998330111777"
 
 
 ortga = "O'rtga"
