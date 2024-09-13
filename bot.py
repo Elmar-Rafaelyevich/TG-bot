@@ -10,7 +10,7 @@ for directory in directories:
         os.makedirs(directory)
         
 bot = telebot.TeleBot(bot_token)
-print("start")
+
 
 @bot.message_handler(commands=['start'])
 def main(message):
@@ -348,6 +348,7 @@ def location_fun(message):
     exit_markup.add(exit_b)
     bot.send_location(message.chat.id, latitude, longitude)
     
-if __name__ == "__main__":
-    bot.polling(non_stop=True)
+
+bot.polling(none_stop=True)
+
 
