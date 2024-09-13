@@ -121,7 +121,7 @@ def get_phone(message):
     phone = message.text
     if phone.startswith('+') and len(phone) == 13:
         bot.send_message(message.chat.id, "📩 Ma'lumotlaringiz qabul qilindi !\nTez orada siz bilan bog'lanamiz")
-        bot.send_message(-1002187998767, f"Ism : {name} Telefon raqam : {phone}")
+        bot.send_message(-1002401270969, f"Ism : {name} Telefon raqam : {phone}")
     else:
         bot.send_message(message.chat.id, "📞 Telefon raqam noto'g'ri. Iltimos qaytadan kiriting.")
         retry_phone = bot.send_message(message.chat.id, "📞 Telefon raqam kiriting!\nMisol: +998977777777")
